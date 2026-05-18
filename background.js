@@ -1,8 +1,19 @@
 // background.js
+
+// Initialize storage and inject content script into existing tabs when enabled/installed
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.get({ savedUrls: [] }, (data) => {
-    // Ensure the key exists
     chrome.storage.local.set({ savedUrls: data.savedUrls });
+  });
+
+  // Inject content.js into all open tabs immediately
+  chrome.tabs.query({ url: ["http://*/*", "https://*/*"] }, (tabs) => {
+    for (const tab of tabs) {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["content.js"]
+      }).catch(err => console.log("Skipped tab:", tab.id, err));
+    }
   });
 });
 
@@ -13,13 +24,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       set.add(message.url);
       const updated = Array.from(set);
       chrome.storage.local.set({ savedUrls: updated }, () => {
-        // Optional: show a subtle badge with count
         chrome.action.setBadgeText({ text: String(updated.length) });
         chrome.action.setBadgeBackgroundColor({ color: "#555" });
       });
     });
     sendResponse({ ok: true });
   }
-  // Return true if you plan to send an async response.
   return false;
 });
