@@ -5,7 +5,9 @@
   "description": "Intercept middle-clicks on links: save the URL to a list instead of opening a new tab. Download the list anytime.",
   "permissions": [
     "storage",
-    "downloads"
+    "downloads",
+    "scripting",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"
