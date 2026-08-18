@@ -1,4 +1,4 @@
-// content.js — Save Middle-Click Links v2
+// content.js — LinkStash v2
 (function () {
   // Guard against double injection
   if (window.__smclInjected) return;

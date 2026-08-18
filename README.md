@@ -1,13 +1,13 @@
-# Save Middle-Click Links (v2.0.0)
+# LinkStash (v2.0.0)
 
-A sleek, feature-packed browser extension that intercepts **Alt + Clicks** on links to effortlessly save and organize URLs into a collection without opening new tabs.
+A sleek, feature-packed browser extension that intercepts **Alt + Clicks** on links to effortlessly save and organize URLs into a clean collection without opening new tabs.
 
 ---
 
 ## ✨ Features
 
-- **⚡ Quick Link Capture**: Simply **Alt + Left Click** on any hyperlink to instantly save the link and title.
-- **🍞 Visual Toast Notifications**: Displays smooth on-page feedback when a link is saved or if it was already in your list.
+- **⚡ Quick Link Capture**: Simply **Alt + Left Click** on any hyperlink to instantly save the link and page title.
+- **🍞 Visual Toast Notifications**: Displays smooth on-page feedback when a link is saved or if it was already in your stash.
 - **🚫 Duplicate Detection**: Automatically prevents duplicate URLs from cluttering your list.
 - **🔍 Search & Filter**: Real-time search bar in the popup to quickly find links by domain, page title, or URL path.
 - **📦 Multi-Format Export**: Download your saved links in multiple formats:
@@ -37,14 +37,14 @@ To install this extension in any Chromium-based browser (Chrome, Edge, Brave, Op
    - Open your browser and navigate to `chrome://extensions` (or `edge://extensions`, `brave://extensions`).
    - Enable **Developer mode** (toggle in the top-right corner).
    - Click **Load unpacked**.
-   - Select the `SaveMiddleClickLinks` folder.
+   - Select the extension folder (`LinkStash` / `SaveMiddleClickLinks`).
 
 ---
 
 ## 📖 How to Use
 
 1. **Save a Link**: Hold <kbd>Alt</kbd> and **left-click** any link on any webpage. A confirmation toast will appear.
-2. **Open Saved Links**: Click the extension icon in your browser toolbar to view your saved links with relative timestamps and domain badges.
+2. **Open LinkStash**: Click the LinkStash icon in your browser toolbar to view your saved links with relative timestamps and domain badges.
 3. **Search**: Type in the search box to filter links on the fly.
 4. **Export / Copy**: Choose your preferred format from the dropdown (`TXT`, `JSON`, `CSV`, `MD`), then click **Export** to download or **Copy** to clipboard.
 5. **Manage Links**: 
@@ -61,4 +61,5 @@ To install this extension in any Chromium-based browser (Chrome, Edge, Brave, Op
 - `content.js`: Content script injected into pages to intercept Alt+clicks and show toast feedback.
 - `popup.html`: Modern, responsive popup interface supporting multiple visual themes.
 - `popup.js`: Popup logic for search, themes, rendering, formatting, and clipboard/download exports.
+
 

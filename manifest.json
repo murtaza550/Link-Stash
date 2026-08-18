@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Save Middle-Click Links",
+  "name": "LinkStash",
   "version": "2.0.0",
-  "description": "Intercept Alt+clicks on links: save the URL to a list instead of opening a new tab. Download the list anytime.",
+  "description": "Effortlessly capture and organize links with Alt+Click without opening new tabs. Search, theme, copy, and export anytime.",
   "permissions": [
     "storage",
     "downloads",
@@ -17,7 +17,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Saved Links"
+    "default_title": "LinkStash"
   },
   "content_scripts": [
     {

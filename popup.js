@@ -1,4 +1,4 @@
-// popup.js — Save Middle-Click Links v2
+// popup.js — LinkStash v2
 
 // ──────────────────────────────────────────────
 // DOM Refs
@@ -196,17 +196,17 @@ toggleEl.addEventListener("change", () => {
 function formatLinks(links, fmt) {
   switch (fmt) {
     case "json":
-      return { text: JSON.stringify(links, null, 2), file: "saved_links.json", mime: "application/json" };
+      return { text: JSON.stringify(links, null, 2), file: "linkstash_export.json", mime: "application/json" };
     case "csv": {
       const rows = links.map(l =>
         `"${l.url.replace(/"/g, '""')}","${(l.title || "").replace(/"/g, '""')}","${new Date(l.timestamp).toISOString()}"`
       );
-      return { text: "url,title,saved_at\n" + rows.join("\n"), file: "saved_links.csv", mime: "text/csv" };
+      return { text: "url,title,saved_at\n" + rows.join("\n"), file: "linkstash_export.csv", mime: "text/csv" };
     }
     case "md":
-      return { text: links.map(l => `- [${l.title || l.url}](${l.url})`).join("\n"), file: "saved_links.md", mime: "text/markdown" };
+      return { text: links.map(l => `- [${l.title || l.url}](${l.url})`).join("\n"), file: "linkstash_export.md", mime: "text/markdown" };
     default:
-      return { text: links.map(l => l.url).join("\n"), file: "saved_links.txt", mime: "text/plain" };
+      return { text: links.map(l => l.url).join("\n"), file: "linkstash_export.txt", mime: "text/plain" };
   }
 }
 

@@ -1,4 +1,4 @@
-// background.js — Save Middle-Click Links v2
+// background.js — LinkStash v2
 
 // --- Badge Restoration (fixes #9) ---
 function restoreBadge() {
