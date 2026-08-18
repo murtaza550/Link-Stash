@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Save Middle-Click Links",
-  "version": "1.0.0",
-  "description": "Intercept middle-clicks on links: save the URL to a list instead of opening a new tab. Download the list anytime.",
+  "version": "2.0.0",
+  "description": "Intercept Alt+clicks on links: save the URL to a list instead of opening a new tab. Download the list anytime.",
   "permissions": [
     "storage",
     "downloads",

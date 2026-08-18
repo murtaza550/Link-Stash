@@ -1,30 +1,707 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Saved Links</title>
-    <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 14px; min-width: 260px; }
-      h1 { font-size: 16px; margin: 0 0 8px; }
-      .count { margin: 6px 0 12px; color: #555; }
-      button { padding: 8px 10px; border: none; border-radius: 8px; cursor: pointer; margin-right: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-      #download { background: #2563eb; color: white; }
-      #clear { background: #e5e7eb; }
-      #exportArea { width: 100%; height: 120px; margin-top: 10px; display: none; }
-      .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-      small { color: #777; display:block; margin-top:8px; }
-    </style>
-  </head>
-  <body>
-    <h1>Saved Links</h1>
-    <div class="count"><span id="count">0</span> saved</div>
-    <div class="row">
-      <button id="download">Download .txt</button>
-      <button id="copy">Copy to clipboard</button>
-      <button id="clear">Clear</button>
+
+<head>
+  <meta charset="utf-8">
+  <title>Saved Links</title>
+  <style>
+    /* ==============================================
+       Reset & Base
+    ============================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+      width: 400px;
+      max-height: 540px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: color 0.35s ease;
+    }
+
+    /* ==============================================
+       Theme: Light (default)
+    ============================================== */
+    body,
+    body[data-theme="light"] {
+      background: #f0f2f5;
+      --panel: #ffffff;
+      --panel-h: #f5f7fa;
+      --input-bg: #f0f2f5;
+      --t1: #111827;
+      --t2: #6b7280;
+      --t3: #9ca3af;
+      --tl: #2563eb;
+      --brd: #e5e7eb;
+      --acc: #2563eb;
+      --acc-h: #1d4ed8;
+      --acc-s: rgba(37, 99, 235, 0.08);
+      --dng: #ef4444;
+      --dng-s: rgba(239, 68, 68, 0.07);
+      --badge: #2563eb;
+      --shd: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --r: 10px;
+      --rs: 7px;
+      --sb: #d1d5db;
+      --sb-h: #b0b5bd;
+      --blur: none;
+      --bw: 1px;
+      color: #111827;
+    }
+
+    /* ==============================================
+       Theme: Dark
+    ============================================== */
+    body[data-theme="dark"] {
+      background: #0f1117;
+      --panel: #1a1d2e;
+      --panel-h: #242838;
+      --input-bg: #242838;
+      --t1: #e2e8f0;
+      --t2: #94a3b8;
+      --t3: #4a5568;
+      --tl: #93b4fd;
+      --brd: #2a2f42;
+      --acc: #818cf8;
+      --acc-h: #6366f1;
+      --acc-s: rgba(129, 140, 248, 0.1);
+      --dng: #f87171;
+      --dng-s: rgba(248, 113, 113, 0.08);
+      --badge: #818cf8;
+      --shd: 0 1px 4px rgba(0, 0, 0, 0.25);
+      --r: 10px;
+      --rs: 7px;
+      --sb: #363c54;
+      --sb-h: #4a5170;
+      --blur: none;
+      --bw: 1px;
+      color: #e2e8f0;
+    }
+
+    /* ==============================================
+       Theme: Y2K Glass
+    ============================================== */
+    body[data-theme="y2k"] {
+      background: linear-gradient(135deg, #a855f7, #ec4899, #6366f1, #06b6d4);
+      background-size: 300% 300%;
+      animation: y2k-shift 10s ease infinite;
+      --panel: rgba(255, 255, 255, 0.4);
+      --panel-h: rgba(255, 255, 255, 0.55);
+      --input-bg: rgba(255, 255, 255, 0.45);
+      --t1: #2e1065;
+      --t2: #581c87;
+      --t3: #7e22ce;
+      --tl: #c026d3;
+      --brd: rgba(255, 255, 255, 0.6);
+      --acc: #ec4899;
+      --acc-h: #db2777;
+      --acc-s: rgba(236, 72, 153, 0.15);
+      --dng: #f97316;
+      --dng-s: rgba(249, 115, 22, 0.12);
+      --badge: linear-gradient(135deg, #ec4899, #8b5cf6);
+      --shd: 0 2px 10px rgba(147, 51, 234, 0.18);
+      --r: 16px;
+      --rs: 10px;
+      --sb: rgba(168, 85, 247, 0.3);
+      --sb-h: rgba(168, 85, 247, 0.5);
+      --blur: blur(16px) saturate(1.5);
+      --bw: 2px;
+      color: #2e1065;
+    }
+
+    @keyframes y2k-shift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* ==============================================
+       Theme: Modern Liquid Glass
+    ============================================== */
+    body[data-theme="glass"] {
+      background: linear-gradient(160deg, #0c0a1d 0%, #1a1145 30%, #0e1a3a 65%, #0d1f2d 100%);
+      --panel: rgba(255, 255, 255, 0.055);
+      --panel-h: rgba(255, 255, 255, 0.1);
+      --input-bg: rgba(255, 255, 255, 0.07);
+      --t1: #f1f5f9;
+      --t2: rgba(241, 245, 249, 0.6);
+      --t3: rgba(241, 245, 249, 0.35);
+      --tl: #93c5fd;
+      --brd: rgba(255, 255, 255, 0.1);
+      --acc: #93c5fd;
+      --acc-h: #bfdbfe;
+      --acc-s: rgba(147, 197, 253, 0.1);
+      --dng: #fca5a5;
+      --dng-s: rgba(252, 165, 165, 0.08);
+      --badge: rgba(147, 197, 253, 0.22);
+      --shd: 0 4px 24px rgba(0, 0, 0, 0.15);
+      --r: 14px;
+      --rs: 8px;
+      --sb: rgba(255, 255, 255, 0.1);
+      --sb-h: rgba(255, 255, 255, 0.18);
+      --blur: blur(28px) saturate(1.8);
+      --bw: 1px;
+      color: #f1f5f9;
+    }
+
+    /* ==============================================
+       Panel (shared glass/solid bg)
+    ============================================== */
+    .panel {
+      background: var(--panel);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+    }
+
+    /* ==============================================
+       Header
+    ============================================== */
+    .header {
+      padding: 10px 14px;
+      border-bottom: var(--bw) solid var(--brd);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 6px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header h1 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--t1);
+      white-space: nowrap;
+    }
+
+    .count-badge {
+      background: var(--badge);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 9px;
+      min-width: 18px;
+      text-align: center;
+      line-height: 16px;
+    }
+
+    .count-badge.zero {
+      opacity: 0.4;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ==============================================
+       Theme Picker Dots
+    ============================================== */
+    .theme-picker {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .theme-picker button {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--brd);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .theme-picker button:hover {
+      transform: scale(1.2);
+    }
+
+    .theme-picker button.active {
+      box-shadow: 0 0 0 2px var(--acc);
+      border-color: transparent;
+    }
+
+    .td-light {
+      background: #f0f2f5 !important;
+      border-color: #d1d5db !important;
+    }
+
+    .td-dark {
+      background: #1a1d2e !important;
+      border-color: #363c54 !important;
+    }
+
+    .td-y2k {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6) !important;
+      border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .td-glass {
+      background: linear-gradient(135deg, #1a1145, #0e1a3a) !important;
+      border-color: rgba(147, 197, 253, 0.3) !important;
+    }
+
+    /* ==============================================
+       Toggle Switch
+    ============================================== */
+    .toggle-wrap {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .toggle-wrap input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--t3);
+      border-radius: 18px;
+      transition: background 0.25s;
+      cursor: pointer;
+    }
+
+    .toggle-bg::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 2px;
+      bottom: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+    }
+
+    .toggle-wrap input:checked+.toggle-bg {
+      background: var(--acc);
+    }
+
+    .toggle-wrap input:checked+.toggle-bg::before {
+      transform: translateX(16px);
+    }
+
+    /* ==============================================
+       Search Bar
+    ============================================== */
+    .search-wrap {
+      padding: 7px 14px;
+      border-bottom: var(--bw) solid var(--brd);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--t3);
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 6px 10px 6px 28px;
+      border: var(--bw) solid var(--brd);
+      border-radius: var(--rs);
+      background: var(--input-bg);
+      color: var(--t1);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+    }
+
+    .search-wrap input::placeholder {
+      color: var(--t3);
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 2px var(--acc-s);
+    }
+
+    /* ==============================================
+       Link List
+    ============================================== */
+    .link-list {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 50px;
+      max-height: 350px;
+    }
+
+    .link-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .link-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .link-list::-webkit-scrollbar-thumb {
+      background: var(--sb);
+      border-radius: 3px;
+    }
+
+    .link-list::-webkit-scrollbar-thumb:hover {
+      background: var(--sb-h);
+    }
+
+    /* ==============================================
+       Link Item
+    ============================================== */
+    .link-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 14px;
+      gap: 10px;
+      border-bottom: 1px solid var(--brd);
+      transition: background 0.15s;
+      background: transparent;
+    }
+
+    .link-item:hover {
+      background: var(--panel-h);
+    }
+
+    body[data-theme="y2k"] .link-item,
+    body[data-theme="glass"] .link-item {
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+    }
+
+    .link-fav {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      margin-top: 1px;
+      text-transform: uppercase;
+      box-shadow: var(--shd);
+    }
+
+    .link-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .link-title {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--t1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 1px;
+    }
+
+    .link-url {
+      font-size: 11px;
+      color: var(--tl);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-decoration: none;
+      display: block;
+    }
+
+    .link-url:hover {
+      text-decoration: underline;
+    }
+
+    .link-time {
+      font-size: 10px;
+      color: var(--t3);
+      margin-top: 2px;
+    }
+
+    .link-del {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--t3);
+      font-size: 13px;
+      padding: 4px 5px;
+      border-radius: 5px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: color 0.15s, background 0.15s, opacity 0.15s;
+      opacity: 0;
+    }
+
+    .link-item:hover .link-del {
+      opacity: 1;
+    }
+
+    .link-del:hover {
+      color: var(--dng);
+      background: var(--dng-s);
+    }
+
+    /* ==============================================
+       Empty / No-Results State
+    ============================================== */
+    .empty-state,
+    .no-results {
+      padding: 40px 16px;
+      text-align: center;
+      color: var(--t3);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .empty-icon {
+      font-size: 30px;
+      display: block;
+      margin-bottom: 8px;
+      opacity: 0.65;
+    }
+
+    .no-results {
+      padding: 24px 16px;
+      font-size: 12px;
+    }
+
+    /* ==============================================
+       Action Bar
+    ============================================== */
+    .actions {
+      padding: 9px 14px;
+      border-top: var(--bw) solid var(--brd);
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .actions button,
+    .actions select {
+      padding: 5px 9px;
+      border: var(--bw) solid var(--brd);
+      border-radius: var(--rs);
+      cursor: pointer;
+      font-size: 11.5px;
+      font-family: inherit;
+      background: var(--panel);
+      color: var(--t1);
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+    }
+
+    .actions select {
+      color: var(--t2);
+    }
+
+    .actions button:hover {
+      background: var(--panel-h);
+    }
+
+    .actions button:active {
+      transform: scale(0.97);
+    }
+
+    .actions button:disabled {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    #exportBtn {
+      background: var(--acc);
+      color: #fff;
+      border-color: var(--acc);
+      font-weight: 600;
+    }
+
+    #exportBtn:hover {
+      background: var(--acc-h);
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    #clearBtn {
+      color: var(--dng);
+      border-color: currentColor;
+      opacity: 0.75;
+    }
+
+    #clearBtn:hover {
+      background: var(--dng-s);
+      opacity: 1;
+    }
+
+    /* ==============================================
+       Y2K Gloss Overlay
+    ============================================== */
+    body[data-theme="y2k"] .actions button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 12%;
+      right: 12%;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent);
+      border-radius: 0 0 40% 40%;
+      pointer-events: none;
+    }
+
+    body[data-theme="y2k"] .actions button,
+    body[data-theme="y2k"] .actions select {
+      border-width: 2px;
+      font-weight: 600;
+    }
+
+    body[data-theme="y2k"] .link-fav {
+      border: 2px solid rgba(255, 255, 255, 0.6);
+    }
+
+    body[data-theme="y2k"] .count-badge {
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    body[data-theme="y2k"] .toggle-bg::before {
+      box-shadow: 0 1px 4px rgba(147, 51, 234, 0.3);
+    }
+
+    body[data-theme="y2k"] .search-wrap input {
+      border-width: 2px;
+    }
+
+    /* ==============================================
+       Glass Refinements
+    ============================================== */
+    body[data-theme="glass"] .header {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    body[data-theme="glass"] .link-item {
+      border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+
+    body[data-theme="glass"] .link-fav {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    body[data-theme="glass"] .actions button:hover {
+      box-shadow: 0 0 14px rgba(147, 197, 253, 0.12);
+    }
+
+    body[data-theme="glass"] .count-badge {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* ==============================================
+       Fade-in animation for link items
+    ============================================== */
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .link-item {
+      animation: fadeSlideIn 0.2s ease both;
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+
+  <!-- ─── Header ─── -->
+  <div class="header panel">
+    <div class="header-left">
+      <h1>Saved Links</h1>
+      <span class="count-badge" id="countBadge">0</span>
     </div>
-    <small>Middle-click a link to save it instead of opening in a new tab.</small>
-    <textarea id="exportArea" readonly></textarea>
-    <script src="popup.js"></script>
-  </body>
+    <div class="header-right">
+      <div class="theme-picker" id="themePicker">
+        <button class="td-light active" data-t="light" title="Light"></button>
+        <button class="td-dark" data-t="dark" title="Dark"></button>
+        <button class="td-y2k" data-t="y2k" title="Y2K Glass"></button>
+        <button class="td-glass" data-t="glass" title="Liquid Glass"></button>
+      </div>
+      <label class="toggle-wrap" title="Enable / disable link capturing">
+        <input type="checkbox" id="toggleEnabled" checked />
+        <span class="toggle-bg"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- ─── Search ─── -->
+  <div class="search-wrap panel">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search saved links…" />
+  </div>
+
+  <!-- ─── Link List ─── -->
+  <div class="link-list" id="linkList"></div>
+
+  <!-- ─── Actions ─── -->
+  <div class="actions panel">
+    <select id="exportFormat" title="Export format">
+      <option value="txt">.txt</option>
+      <option value="json">.json</option>
+      <option value="csv">.csv</option>
+      <option value="md">.md</option>
+    </select>
+    <button id="exportBtn">Export</button>
+    <button id="copyBtn" title="Copy to clipboard">Copy</button>
+    <button id="undoBtn" title="Remove last saved link">Undo</button>
+    <span class="spacer"></span>
+    <button id="clearBtn">Clear all</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
 </html>
