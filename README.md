@@ -1,43 +1,64 @@
-# Save Middle-Click Links
+# Save Middle-Click Links (v2.0.0)
 
-A browser extension that intercepts middle-clicks on links, saving the URL to a list instead of opening it in a new tab. You can view and download your saved links at any time.
+A sleek, feature-packed browser extension that intercepts **Alt + Clicks** on links to effortlessly save and organize URLs into a collection without opening new tabs.
 
-## Features
+---
 
-- **Capture Links**: Middle-click on any link, and its URL is automatically saved.
-- **Prevent New Tabs**: Stops the default behavior of middle-clicks opening new tabs, keeping your browsing session clean.
-- **View Saved Links**: Click on the extension icon to see a popup with all your saved URLs.
-- **Download List**: Download your list of captured links as a `.txt` file with a single click.
-- **Clear List**: Easily clear the entire list of links from the popup.
+## ✨ Features
 
-## Installation
+- **⚡ Quick Link Capture**: Simply **Alt + Left Click** on any hyperlink to instantly save the link and title.
+- **🍞 Visual Toast Notifications**: Displays smooth on-page feedback when a link is saved or if it was already in your list.
+- **🚫 Duplicate Detection**: Automatically prevents duplicate URLs from cluttering your list.
+- **🔍 Search & Filter**: Real-time search bar in the popup to quickly find links by domain, page title, or URL path.
+- **📦 Multi-Format Export**: Download your saved links in multiple formats:
+  - **TXT** (Plain URL list)
+  - **JSON** (Full data with titles and timestamps)
+  - **CSV** (Spreadsheet-friendly)
+  - **Markdown** (Formatted list with clickable markdown links)
+- **📋 1-Click Clipboard Copy**: Copy all your saved links in any selected format straight to your clipboard.
+- **↩️ Undo & Individual Delete**: Remove single links directly from the list or use the **Undo** button to revert your last save.
+- **🎨 Custom UI Themes**: Switch between **Light**, **Dark**, **Y2K**, and **Glassmorphism** styles.
+- **⏸️ Quick Enable/Disable Toggle**: Pause link interception anytime from the header switch without uninstalling.
+- **🔢 Live Badge Counter**: Keeps track of your saved count directly on the extension icon badge (displays `OFF` when paused).
 
-To install this extension, you can load it as an unpacked extension in a Chromium-based browser (like Chrome, Edge, or Brave).
+---
 
-1.  **Download the code:**
-    *   Clone this repository: `git clone https://github.com/murtaza550/SaveMiddleClickLinks.git`
-    *   Or download the ZIP and extract it.
+## 🚀 Installation
 
-2.  **Load the extension in your browser:**
-    *   Navigate to `chrome://extensions` (or the equivalent extensions page in your browser).
-    *   Enable **"Developer mode"** (usually a toggle in the top-right corner).
-    *   Click on the **"Load unpacked"** button.
-    *   Select the folder where you cloned or extracted the repository.
+To install this extension in any Chromium-based browser (Chrome, Edge, Brave, Opera, Arc):
 
-The extension icon should now appear in your browser's toolbar.
+1. **Clone or Download the Repository:**
+   ```bash
+   git clone https://github.com/murtaza550/SaveMiddleClickLinks.git
+   ```
+   *(Or download the ZIP and extract it to a folder).*
 
-## How to Use
+2. **Load into Browser:**
+   - Open your browser and navigate to `chrome://extensions` (or `edge://extensions`, `brave://extensions`).
+   - Enable **Developer mode** (toggle in the top-right corner).
+   - Click **Load unpacked**.
+   - Select the `SaveMiddleClickLinks` folder.
 
-1.  **Save a Link**: Find any hyperlink on a webpage and **middle-click** it. The link's URL will be added to your saved list.
-2.  **View Links**: Click the "Save Middle-Click Links" extension icon in your toolbar. A popup will appear showing all the URLs you've saved.
-3.  **Download or Clear**:
-    *   Click the **"Download Links"** button in the popup to save all the URLs to a `links.txt` file.
-    *   Click the **"Clear Links"** button to permanently delete all saved URLs.
+---
 
-## Files
+## 📖 How to Use
 
--   `manifest.json`: Defines the extension's properties, permissions, and scripts.
--   `background.js`: The service worker that handles storage logic.
--   `content.js`: Injected into webpages to capture the middle-click events.
--   `popup.html`: The HTML structure for the extension's popup.
--   `popup.js`: The logic for the popup, including displaying links and handling button clicks.
+1. **Save a Link**: Hold <kbd>Alt</kbd> and **left-click** any link on any webpage. A confirmation toast will appear.
+2. **Open Saved Links**: Click the extension icon in your browser toolbar to view your saved links with relative timestamps and domain badges.
+3. **Search**: Type in the search box to filter links on the fly.
+4. **Export / Copy**: Choose your preferred format from the dropdown (`TXT`, `JSON`, `CSV`, `MD`), then click **Export** to download or **Copy** to clipboard.
+5. **Manage Links**: 
+   - Click the **✕** button on any link to delete it.
+   - Click **Undo** to remove the most recent link.
+   - Click **Clear all** (confirm by clicking twice) to wipe your list.
+
+---
+
+## 📁 Project Structure
+
+- `manifest.json`: Manifest V3 extension configuration and permissions.
+- `background.js`: Service worker handling local storage, badge counts, migration, and state toggles.
+- `content.js`: Content script injected into pages to intercept Alt+clicks and show toast feedback.
+- `popup.html`: Modern, responsive popup interface supporting multiple visual themes.
+- `popup.js`: Popup logic for search, themes, rendering, formatting, and clipboard/download exports.
+
